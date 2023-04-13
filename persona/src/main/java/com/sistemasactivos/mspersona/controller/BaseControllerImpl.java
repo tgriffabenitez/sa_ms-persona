@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.List;
+
 public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long> {
     @Autowired
     protected S service;
@@ -19,7 +21,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     @GetMapping("/personas")
     public ResponseEntity<?> getAllPageable(Pageable pageable) {
         try {
-            Page<E> entity = service.findAll(pageable);
+            List<E> entity = service.findAll();
             if (entity.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> implements BaseService<E, ID> {
@@ -25,9 +26,9 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     }
 
     @Override
-    public Page<E> findAll(Pageable pageable) throws Exception {
+    public List<E> findAll() throws Exception {
         try {
-            return baseRepository.findAll(pageable);
+            return baseRepository.findAll();
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
