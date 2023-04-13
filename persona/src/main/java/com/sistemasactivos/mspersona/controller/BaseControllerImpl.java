@@ -3,8 +3,6 @@ package com.sistemasactivos.mspersona.controller;
 import com.sistemasactivos.mspersona.model.Base;
 import com.sistemasactivos.mspersona.service.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +17,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     protected S service;
 
     @GetMapping("/personas")
-    public ResponseEntity<?> getAllPageable(Pageable pageable) {
+    public ResponseEntity<?> getAll() {
         try {
             List<E> entity = service.findAll();
             if (entity.isEmpty()) {
