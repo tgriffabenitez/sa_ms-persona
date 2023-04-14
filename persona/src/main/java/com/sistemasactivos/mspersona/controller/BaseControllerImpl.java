@@ -5,10 +5,7 @@ import com.sistemasactivos.mspersona.service.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,11 +28,14 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     }
 
     @GetMapping("/persona/{id}")
-    public ResponseEntity<?> getById(Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
+            if (id == null || id <= 0)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
             E entity = service.findById(id);
             if (entity == null) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(entity, HttpStatus.OK);
 
@@ -45,8 +45,11 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     }
 
     @PostMapping("/personas")
-    public ResponseEntity<?> save(E entity) {
+    public ResponseEntity<?> save(@RequestBody E entity) {
         try {
+            if (entity == null)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
             E entityDB = service.save(entity);
             return new ResponseEntity<>(entityDB, HttpStatus.CREATED);
 
@@ -56,13 +59,19 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     }
 
     @PutMapping("/persona/{id}")
-    public ResponseEntity<?> update(Long id, E entity) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
-            E entityDB = service.update(id, entity);
-            if (entityDB == null) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(entityDB, HttpStatus.OK);
+            if (id == null || id <= 0)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+            if (service.findById(id) == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            E updatedEntity = service.update(id, entity);
+            if (updatedEntity == null)
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(updatedEntity, HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,13 +79,20 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     }
 
     @DeleteMapping("/persona/{id}")
-    public ResponseEntity<?> delete(Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
+            if (id == null || id <= 0)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+            if (service.findById(id) == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
             boolean deleted = service.delete(id);
-            if (deleted) {
+            if (deleted)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+            else
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
 
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
