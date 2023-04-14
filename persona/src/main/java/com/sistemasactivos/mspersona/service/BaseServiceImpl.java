@@ -7,8 +7,6 @@ import com.sistemasactivos.mspersona.repository.PersonaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,7 +51,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
             if (entity instanceof Persona persona) {
                 Persona personaDB = personaRepository.findByCuit(persona.getCuit());
                 if (personaDB != null) {
-                    throw new DataIntegrityViolationException("Ya existe una persona con el mismo CUIT");
+                    throw new DataIntegrityViolationException("Ya existe una persona con el CUIT: " + persona.getCuit());
                 }
             }
             return baseRepository.save(entity);

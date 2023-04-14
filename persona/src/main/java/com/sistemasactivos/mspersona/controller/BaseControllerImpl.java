@@ -3,6 +3,7 @@ package com.sistemasactivos.mspersona.controller;
 import com.sistemasactivos.mspersona.model.Base;
 import com.sistemasactivos.mspersona.service.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,9 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
             E entityDB = service.save(entity);
             return new ResponseEntity<>(entityDB, HttpStatus.CREATED);
 
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -72,6 +76,9 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
             return new ResponseEntity<>(updatedEntity, HttpStatus.OK);
+
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
 
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
