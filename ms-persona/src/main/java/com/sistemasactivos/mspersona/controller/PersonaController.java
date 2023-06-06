@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/personas")
 public class PersonaController extends BaseControllerImpl<Persona, PersonaServiceImpl> {
 }
