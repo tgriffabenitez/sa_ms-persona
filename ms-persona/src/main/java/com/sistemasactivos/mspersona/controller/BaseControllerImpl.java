@@ -14,7 +14,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
     @Autowired
     protected S service;
 
-    @GetMapping("/personas")
+    @GetMapping("")
     public ResponseEntity<?> getAll() {
         try {
             List<E> entity = service.findAll();
@@ -28,7 +28,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
-    @GetMapping("/persona/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
             if (id == null || id <= 0)
@@ -45,7 +45,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
-    @PostMapping("/personas")
+    @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
             if (entity == null)
@@ -62,7 +62,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
-    @PutMapping("/persona/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
             if (id == null || id <= 0)
@@ -85,7 +85,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
-    @DeleteMapping("/persona/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             if (id == null || id <= 0)
