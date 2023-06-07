@@ -14,7 +14,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "user")
 public class User extends Base {
-    private String username;
-    private String password;
+    private String name;
     private String email;
+    private String password;
 }
