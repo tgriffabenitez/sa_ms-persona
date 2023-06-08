@@ -19,32 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserDetailsService userDetailsService;
-    private final JWTAuthorizationFilter jwtAuthorizationFilter;
+    private UserDetailsService userDetailsService;
+    private JWTAuthorizationFilter jwtAuthorizationFilter;
 
     public static void main(String[] args) {
         System.out.println("pass: " + new BCryptPasswordEncoder().encode("123"));
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
-        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
-        jwtAuthenticationFilter.setAuthenticationManager(authManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
-
-        return http
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(jwtAuthorizationFilter)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
     }
 
     @Bean
@@ -54,6 +33,26 @@ public class SecurityConfiguration {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder())
                 .and()
+                .build();
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
+        jwtAuthenticationFilter.setAuthenticationManager(authManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
+        return http
+                .csrf().disable()
+                .authorizeRequests()
+                .anyRequest()//put, get, post, delete
+                .authenticated()
+                .and()
+                .sessionManagement() //nuevo
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)//nuevo
+                .and()
+                .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
