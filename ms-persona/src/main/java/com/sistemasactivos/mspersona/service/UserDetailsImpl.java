@@ -1,12 +1,13 @@
 package com.sistemasactivos.mspersona.service;
 
+import com.sistemasactivos.mspersona.model.Role;
 import com.sistemasactivos.mspersona.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -15,7 +16,13 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        Set<Role> roles = user.getRoles();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        for (Role role : roles)
+            authorities.add(new SimpleGrantedAuthority(role.getRole_name()));
+
+        return authorities;
     }
 
     @Override
